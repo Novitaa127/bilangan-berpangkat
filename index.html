@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belajar Bilangan Berpangkat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-blue-50 min-h-screen flex flex-col items-center justify-center p-6">
+  <div class="bg-white shadow-lg rounded-xl p-6 w-full max-w-md text-center">
+    <h1 class="text-2xl font-bold mb-4">Simulasi Bilangan Berpangkat</h1>
+    <div class="flex flex-col gap-4">
+      <input type="number" id="basis" placeholder="Masukkan basis (a)" class="border rounded p-2">
+      <input type="number" id="pangkat" placeholder="Masukkan pangkat (n)" class="border rounded p-2">
+      <button onclick="hitungPangkat()" class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Hitung</button>
+    </div>
+    <div class="mt-4">
+      <p id="hasil" class="text-xl font-semibold text-gray-700"></p>
+      <p id="langkah" class="text-sm text-gray-500 mt-2"></p>
+    </div>
+  </div>
+
+  <div class="mt-8 w-full max-w-xl">
+    <canvas id="chart"></canvas>
+  </div>
+
+  <script>
+    let chart;
+
+    function hitungPangkat() {
+      const a = parseInt(document.getElementById('basis').value);
+      const n = parseInt(document.getElementById('pangkat').value);
+      if (isNaN(a) || isNaN(n)) return;
+
+      const hasil = a ** n;
+      const langkah = Array(n).fill(a).join(" × ");
+      document.getElementById('hasil').innerText = `${a}^${n} = ${hasil}`;
+      document.getElementById('langkah').innerText = `Perkalian berulang: ${langkah}`;
+
+      const labels = Array.from({length: n + 1}, (_, i) => i);
+      const data = labels.map(i => a ** i);
+
+      if (chart) chart.destroy();
+      chart = new Chart(document.getElementById('chart'), {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: `Pertumbuhan ${a}^x`,
+            data: data,
+            borderColor: '#2563eb',
+            fill: false,
+            tension: 0.2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true }
+          },
+          scales: {
+            x: { title: { display: true, text: 'Pangkat (x)' } },
+            y: { title: { display: true, text: 'Hasil (a^x)' }, beginAtZero: true }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
